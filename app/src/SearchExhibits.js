@@ -3,13 +3,18 @@ import {
   Redirect
 } from "react-router-dom";
 import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 
+import SimpleTable from "./SimpleTable";
 
-class Login extends Component {
+
+class SearchExhibits extends Component {
     constructor(props) {
         super(props);
-        this.state = {username: "", password: "", errorMessage: ""};
+        this.state = {name: "", min_size: "", max_size: "", min_animals: "", max_animals: "", water_feature: "", errorMessage: "", result_table: null};
     }
 
     render() {
@@ -17,52 +22,84 @@ class Login extends Component {
         <div
             style={{display: "flex", flexDirection: "column", alignItems: "start"}}
         >
-            <h1>Login</h1>
+            <h1>Search Exhibits</h1>
             <TextField
-                label = "Username"
-                value = {this.state.username}
-                onChange = {e => this.setState({username: e.target.value})}
+                label = "Name"
+                value = {this.state.name}
+                onChange = {e => this.setState({name: e.target.value})}
             />
             <TextField
-                label = "Password"
-                type="password"
-                value = {this.state.password}
-                onChange = {e => this.setState({password: e.target.value})}
+                label = "Minimum size"
+                type = "number"
+                value = {this.state.min_size}
+                onChange = {e => this.setState({min_size: e.target.value})}
             />
+            <TextField
+                label = "Maximum size"
+                type = "number"
+                value = {this.state.max_size}
+                onChange = {e => this.setState({max_size: e.target.value})}
+            />
+            <TextField
+                label = "Minimum animals"
+                type = "number"
+                value = {this.state.min_animals}
+                onChange = {e => this.setState({min_animals: e.target.value})}
+            />
+            <TextField
+                label = "Maximum animals"
+                type = "number"
+                value = {this.state.max_animals}
+                onChange = {e => this.setState({max_animals: e.target.value})}
+            />
+            <InputLabel>Water feature</InputLabel>
+            <Select
+                label = "Water feature"
+                value = {this.state.water_feature}
+                onChange = {e => this.setState({water_feature: e.target.value})}
+            >
+                <MenuItem value={null} />
+                <MenuItem value={true}>Yes</MenuItem>
+                <MenuItem value={false}>No</MenuItem>
+            </Select>
             <Button variant = "contained"
                 onClick = {this.submit.bind(this)}
-            >Login</Button>
+            >Search</Button>
             <p>{this.state.errorMessage}</p>
+            {
+                this.state.result_table != null ?
+                <SimpleTable
+                    header = {this.state.result_table.header}
+                    rows = {this.state.result_table.rows}
+                />
+                : null
+            }
         </div>
         );
     }
 
     submit() {
-        this.login(this.state.username, this.state.password).then((result) => {
-            if(result.loginSuceeded) {
-                this.props.onLogin(result.username, result.userType, result.authToken)
-            } else {
-                this.setState({errorMessage: result.errorMessage})
-            }
+        this.setState({result_table:
+            {header: ["Column 1", "Column 2"],
+            rows: [["Cell 1", "Cell 2"], ["Cell 3", "Cell 4"]]}
         });
-
     }
-
-    login(username, password) {
-        if(username == password) {
-            return Promise.resolve({
-                loginSuceeded: true,
-                authToken: "auth",
-                username: "user",
-                userType: "Visitor"
-            });
-        } else {
-            return Promise.resolve({
-                loginSuceeded: false,
-                errorMessage: "Error"
-            });
-        }
-    }
+    //
+    // login(username, password) {
+    //     if(username == password) {
+    //         return Promise.resolve({
+    //             loginSuceeded: true,
+    //             authToken: "auth",
+    //             username: "user",
+    //             userType: "Visitor"
+    //         });
+    //     } else {
+    //         return Promise.resolve({
+    //             loginSuceeded: false,
+    //             errorMessage: "Error"
+    //         });
+    //     }
+    // }
 }
 
-export default Login;
+export default SearchExhibits;

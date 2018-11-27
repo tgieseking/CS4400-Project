@@ -4,6 +4,7 @@ import Home from "./Home";
 import Test from "./Test";
 import Login from "./Login"
 import Register from "./Register"
+import SearchExhibits from "./SearchExhibits"
 
 import "./App.css"
 
@@ -24,6 +25,11 @@ class App extends Component {
             case "Visitor":
                 var header = (
                     <div className = {"header"}>
+                        <HeaderLink
+                            text = {"Search Exhibits"}
+                            page = {<SearchExhibits />}
+                            navigate = {this.navigate.bind(this)}
+                        />
                         <p
                             onClick = {() => this.logout()}
                             className = "headerLink"
