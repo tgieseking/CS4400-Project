@@ -8,17 +8,17 @@ from werkzeug import generate_password_hash, check_password_hash
 @app.route('/visitor', methods=['POST'])
 def add_visitor():
 	try:
-		_json = request.json
+		_json = request.get_json()
 		_username = _json['username']
 		_email = _json['email']
 		_password = _json['pwd']
 		# validate the received values
-		if _name and _email and _password and request.method == 'POST':
+		if _username and _email and _password and request.method == 'POST':
 			#do not save password as a plain text
 			_hashed_password = generate_password_hash(_password)
 			# save edits
-			sql = "INSERT INTO User VALUES(%s, %s, %s, UserType=“Visitor”);"
-			sql2 = "INSERT INTO Visitor VALUES(%s);"
+			sql = "INSERT INTO USER VALUES(%s, %s, %s, UserType=“Visitor”);"
+			sql2 = "INSERT INTO VISITOR VALUES(%s);"
 			data = (_username, _email, _hashed_password,)
 			data2 =(_username,)
 			conn = mysql.connect()
@@ -33,6 +33,24 @@ def add_visitor():
 			return not_found()
 	except Exception as e:
 		print(e)
+		return str(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
+@app.route('/visitor', methods=['GET'])
+def get_visitors():
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT * FROM VISITOR")
+		rows = cursor.fetchall()
+		resp = jsonify(rows)
+		resp.status_code = 200
+		return resp
+	except Exception as e:
+		print(e)
+		return str(e)
 	finally:
 		cursor.close() 
 		conn.close()
