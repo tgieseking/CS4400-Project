@@ -17,7 +17,7 @@ def add_visitor():
 			#do not save password as a plain text
 			_hashed_password = generate_password_hash(_password)
 			# save edits
-			sql = "INSERT INTO USER VALUES(%s, %s, %s, UserType=“Visitor”);"
+			sql = "INSERT INTO USER VALUES(%s, %s, %s);"
 			sql2 = "INSERT INTO VISITOR VALUES(%s);"
 			data = (_username, _email, _hashed_password,)
 			data2 =(_username,)
