@@ -9,7 +9,7 @@ from werkzeug import generate_password_hash, check_password_hash
 def add_visitor():
 	try:
 		_json = request.json
-		_username = _json['name']
+		_username = _json['username']
 		_email = _json['email']
 		_password = _json['pwd']
 		# validate the received values
@@ -36,3 +36,50 @@ def add_visitor():
 	finally:
 		cursor.close() 
 		conn.close()
+
+@app.route('/visits_exhibit', methods=['POST'])
+def add_visit():
+	try:
+		_json = request.json
+		_username = _json['username']
+		_exhibitname = _json['exhibit_name']
+		_dateandtime = _json['date_and_time']
+		# validate the received values
+		if _username and _exhibitname and _dateandtime and request.method == 'POST':
+			#do not save password as a plain text
+			# save edits
+			sql = "	INSERT INTO Visit Exhibit VALUES(%s,%s,%s);"
+			data = (_username, _exhibitname, _dateandtime,)
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.execute(sql, data)
+			conn.commit()
+			resp = jsonify('Success')
+			resp.status_code = 200
+			return resp
+		else:
+			return not_found()
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
+@app.route('/visits_exhibit', methods=['GET'])
+def users():
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT * FROM Visit_Exhibit")
+		rows = cursor.fetchall()
+		resp = jsonify(rows)
+		resp.status_code = 200
+		return resp
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
+
+### Add secret key for tokanizable login
