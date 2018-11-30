@@ -48,7 +48,7 @@ def add_visit():
 		if _username and _exhibitname and _dateandtime and request.method == 'POST':
 			#do not save password as a plain text
 			# save edits
-			sql = "	INSERT INTO Visit Exhibit VALUES(%s,%s,%s);"
+			sql = "	INSERT INTO VISITS_EXHIBIT VALUES(%s,%s,%s);"
 			data = (_username, _exhibitname, _dateandtime,)
 			conn = mysql.connect()
 			cursor = conn.cursor()
@@ -70,7 +70,7 @@ def users():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM Visit_Exhibit")
+		cursor.execute("SELECT * FROM VISITS_EXHIBIT")
 		rows = cursor.fetchall()
 		resp = jsonify(rows)
 		resp.status_code = 200
@@ -80,6 +80,7 @@ def users():
 	finally:
 		cursor.close() 
 		conn.close()
-
-
 ### Add secret key for tokanizable login
+
+if __name__ == "__main__":
+    app.run()
