@@ -143,6 +143,90 @@ def add_visit():
 			return not_found()
 	except Exception as e:
 		print(e)
+		return str(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
+@app.route('/note',methods=['POST'])
+def add_note:
+	try:
+		_json = request.json
+		_animalname = _json['animal_name']
+		_animalspecies = _json['animal_species']
+		_username = _json['username']
+		_time = _json['time']
+		_text = _json['text']
+		if _animalname and _animalspecies and _username and _time and _text and request.method == 'POST':
+			sql = "INSERT INTO NOTE VALUES(%s, %s, %s, %s,%s);"
+			data = (_animalname,_animalspecies,_username,_time,_text,)
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.execute(sql, data)
+			conn.commit()
+			resp = jsonify('Success')
+			resp.status_code = 200
+			return resp
+		else:
+			return not_found()
+	except Exception as e:
+		print(e)
+		return str(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
+@app.route('/note',methods=['POST'])
+def add_note:
+	try:
+		_json = request.json
+		_animalname = _json['animal_name']
+		_animalspecies = _json['animal_species']
+		_animaltype = _json['animal_type']
+		_age = _json['animal_age']
+		_exhibitname = _json['exhibit_name']
+		if _animalname and _animalspecies and _animaltype and _age and _exhibitname and request.method == 'POST':
+			sql = "INSERT INTO ANIMAL VALUES(%s, %s, %s, %s,%s);"
+			data = (_animalname,_animalspecies,_animaltype,_age,_exhibitname,)
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.execute(sql, data)
+			conn.commit()
+			resp = jsonify('Success')
+			resp.status_code = 200
+			return resp
+		else:
+			return not_found()
+	except Exception as e:
+		print(e)
+		return str(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
+@app.route('/show',methods=['POST'])
+def add_show:
+	try:
+		_json = request.json
+		_showname = _json['showname']
+		_time = _json['date_and_time']
+		_host = _json['host']
+		_locatedat = _json['located_at']
+		if _showname and _time and _host and _locatedat and request.method == 'POST':
+			sql = "INSERT INTO SHOW VALUES(%s, %s, %s, %s);"
+			data = (_showname,_time,_host,_locatedat,)
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.execute(sql, data)
+			conn.commit()
+			resp = jsonify('Success')
+			resp.status_code = 200
+			return resp
+		else:
+			return not_found()
+	except Exception as e:
+		print(e)
+		return str(e)
 	finally:
 		cursor.close() 
 		conn.close()
