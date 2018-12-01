@@ -39,7 +39,7 @@ def add_visitor():
 		conn.close()
 
 @app.route('/visits_show', methods=['POST'])
-def add_show():
+def add_show_visit():
 	try:
 		_json = request.get_json()
 		_username = _json['username']
@@ -122,7 +122,7 @@ def get_visitors():
 @app.route('/visits_exhibit', methods=['POST'])
 def add_visit():
 	try:
-		_json = request.json
+		_json = request.get_json()
 		_username = _json['username']
 		_exhibitname = _json['exhibit_name']
 		_dateandtime = _json['date_and_time']
@@ -149,9 +149,9 @@ def add_visit():
 		conn.close()
 
 @app.route('/note',methods=['POST'])
-def add_note:
+def add_note():
 	try:
-		_json = request.json
+		_json = request.get_json()
 		_animalname = _json['animal_name']
 		_animalspecies = _json['animal_species']
 		_username = _json['username']
@@ -176,10 +176,10 @@ def add_note:
 		cursor.close() 
 		conn.close()
 
-@app.route('/note',methods=['POST'])
-def add_note:
+@app.route('/animal',methods=['POST'])
+def add_animal():
 	try:
-		_json = request.json
+		_json = request.get_json()
 		_animalname = _json['animal_name']
 		_animalspecies = _json['animal_species']
 		_animaltype = _json['animal_type']
@@ -205,9 +205,9 @@ def add_note:
 		conn.close()
 
 @app.route('/show',methods=['POST'])
-def add_show:
+def add_show():
 	try:
-		_json = request.json
+		_json = request.get_json()
 		_showname = _json['showname']
 		_time = _json['date_and_time']
 		_host = _json['host']
@@ -252,14 +252,29 @@ def users():
 @app.route('/exhibit', methods=['SEARCH'])
 def search_exhibit():
 	try:
-		_json = request.json
-		_exhibitname = _json['name']
+		_json = request.get_json()
+		_exhibitname = _json.get('exhibit_name')
+		if _exhibitname == None:
+			_exhibitname = '%'
+		_water = _json.get('water_feature')
+		if _water == None:
+			_water == '%'
+		_minsize = _json('minsize')
+		if _minsize == None:
+			_minsize = 0;
+		_maxsize = _json.get('maxsize')
+		if _maxsize == None:
+			_maxsize = 4294967295
+		_minanimals = _json.get('minanimals')
+		if _minanimals ==None:
+			_minanimals = 0
+		_maxanimals = _json.get('maxanimals')
 		# validate the received values
-		if _exhibitname and request.method == 'SEARCH':
+		if request.method == 'SEARCH':
 			#do not save password as a plain text
 			# save edits
-			sql = "	SELECT Name, Size, (SELECT COUNT(ANIMAL.Name) as NumAnimals FROM ANIMAL GROUP BY ANIMAL.Exhibit), Water_Feature FROM Exhibit INNER JOIN Animal ON EXHIBIT.Name = ANIMAL.Exhibit WHERE Name = %s;"
-			data = (_exhibitname,)
+			sql = "	SELECT Exhibit.Name, Size, (SELECT COUNT(ANIMAL.Name) as NumAnimals FROM ANIMAL GROUP BY ANIMAL.Exhibit), Water_Feature FROM EXHIBIT INNER JOIN ANIMAL ON EXHIBIT.Name = ANIMAL.Exhibit WHERE EXHIBIT.Name LIKE %s AND Water_Feature LIKE %s AND (Size BETWEEN %s AND %s) AND (NumAnimals BETWEEN %s AND %s);"
+			data = (_exhibitname,_water,_minsize,_maxsize,_minanimals,_maxanimals)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
